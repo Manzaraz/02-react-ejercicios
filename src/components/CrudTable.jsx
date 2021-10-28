@@ -3,7 +3,7 @@ import CrudTableRow from "./CrudTableRow";
 
 export const CrudTable = ({ data, setDataToEdit, deleteData }) => {
   return (
-    <>
+    <div>
       <h2>Tabla de Datos</h2>
       <table>
         <thead>
@@ -30,6 +30,6 @@ export const CrudTable = ({ data, setDataToEdit, deleteData }) => {
           )}
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
