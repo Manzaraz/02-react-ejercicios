@@ -31,6 +31,7 @@ export const CrudFrom = ({
     } else {
       updateData(form);
     }
+    handleReset();
   };
   const handleReset = (e) => {
     setForm(initialForm);
