@@ -4,27 +4,35 @@ import uniqId from "uniqid";
 import { helpHttp } from "../helpers/helpHttp";
 import { CrudFrom } from "./CrudFrom";
 import { CrudTable } from "./CrudTable";
+import Loader from "./Loader";
+import Message from "./Message";
 
 const CrudApi = () => {
-  const [db, setDb] = useState([]);
+  const [db, setDb] = useState(null);
   const [dataToEdit, setDataToEdit] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  let api = helpHttp();
+  // let api = helpHttp();
   let url = "http://localhost:3500/santos";
 
   useEffect(() => {
-    api
+    setLoading(true);
+    // api.get(url).then((res) => {
+    helpHttp()
       .get(url)
       .then((res) => {
         // console.log(res);
         if (!res.err) {
           setDb(res);
+          setError(null);
         } else {
-          setDb([]);
+          setDb(null);
+          setError(res);
         }
-      })
-      .catch((err) => console.log(err));
-  }, []);
+        setLoading(false);
+      });
+  }, [url]);
 
   const createData = (data) => {
     data.id = uniqId.time();
@@ -34,16 +42,18 @@ const CrudApi = () => {
     let newData = db.map((el) => (el.id === data.id ? data : el));
     setDb(newData);
   };
-  const deleteData = (data) => {
+  const deleteData = (id) => {
     let isDelete = window.confirm(
-      `¿Estás seguro de que deseas eliminar a ${data.name}?`
+      `¿Estás seguro de que deseas eliminar a ${id}?`
     );
     if (isDelete) {
-      let newData = db.filter((el) => el.id === data.id);
+      let newData = db.filter((el) => el.id !== id);
       setDb(newData);
     } else {
+      setDb(null);
     }
   };
+
   return (
     <div>
       <h2>Crud API usando Fetch</h2>
@@ -54,11 +64,20 @@ const CrudApi = () => {
           dataToEdit={dataToEdit}
           setDataToEdit={setDataToEdit}
         />
-        <CrudTable
-          data={db}
-          setDataToEdit={setDataToEdit}
-          deleteData={deleteData}
-        />
+        {loading && <Loader />}
+        {error && (
+          <Message
+            msg={`Error ${error.status}: ${error.statusText}`}
+            bgColor="#dc3545"
+          />
+        )}
+        {db && (
+          <CrudTable
+            data={db}
+            setDataToEdit={setDataToEdit}
+            deleteData={deleteData}
+          />
+        )}
       </article>
     </div>
   );
