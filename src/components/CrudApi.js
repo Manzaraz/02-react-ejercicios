@@ -1,11 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import uniqId from "uniqid";
+
+import { helpHttp } from "../helpers/helpHttp";
 import { CrudFrom } from "./CrudFrom";
 import { CrudTable } from "./CrudTable";
 
 const CrudApi = () => {
   const [db, setDb] = useState([]);
   const [dataToEdit, setDataToEdit] = useState(null);
+
+  let api = helpHttp();
+  let url = "http://localhost:3500/santos";
+
+  useEffect(() => {
+    api
+      .get(url)
+      .then((res) => {
+        // console.log(res);
+        if (!res.err) {
+          setDb(res);
+        } else {
+          setDb([]);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const createData = (data) => {
     data.id = uniqId.time();
     setDb([...db, data]);
