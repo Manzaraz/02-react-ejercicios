@@ -13,7 +13,7 @@ const CrudApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // let api = helpHttp();
+  let api = helpHttp();
   let url = "http://localhost:3500/santos";
 
   useEffect(() => {
@@ -36,21 +36,59 @@ const CrudApi = () => {
 
   const createData = (data) => {
     data.id = uniqId.time();
-    setDb([...db, data]);
+    let options = {
+      body: data,
+      headers: { "Content-Type": "application/json" },
+    };
+
+    api.post(url, options).then((res) => {
+      // console.log(res);
+      if (!res.err) {
+        setDb([...db, res]);
+      } else {
+        setError(res);
+      }
+    });
   };
   const updateData = (data) => {
-    let newData = db.map((el) => (el.id === data.id ? data : el));
-    setDb(newData);
+    let endpoint = `${url}/${data.id}`,
+      options = {
+        body: data,
+        headers: { "Content-Type": "application/json" },
+      };
+
+    api.put(endpoint, options).then((res) => {
+      // console.log(res);
+      if (!res.err) {
+        let newData = db.map((el) => (el.id === data.id ? data : el));
+        setDb(newData);
+      } else {
+        setError(res);
+      }
+    });
   };
-  const deleteData = (id) => {
+
+  const deleteData = (data) => {
     let isDelete = window.confirm(
-      `¿Estás seguro de que deseas eliminar a ${id}?`
+      `¿Estás seguro de que deseas eliminar el caballero ${data.name}?`
     );
+
     if (isDelete) {
-      let newData = db.filter((el) => el.id !== id);
-      setDb(newData);
+      let endpoint = `${url}/${data.id}`,
+        options = {
+          headers: { "Content-Type": "application/json" },
+        };
+
+      api.del(endpoint, options).then((res) => {
+        if (!res.err) {
+          let newData = db.filter((el) => el.id !== data.id);
+          setDb(newData);
+        } else {
+          setDb(null);
+        }
+      });
     } else {
-      setDb(null);
+      return;
     }
   };
 

@@ -44,12 +44,12 @@ export const CrudApp = () => {
     let newData = db.map((el) => (el.id === data.id ? data : el));
     setDb(newData);
   };
-  const deleteData = (id) => {
+  const deleteData = (data) => {
     let isDelete = window.confirm(
-      `¿Estás seguro de que deseas eliminar el registro"${id}"?`
+      `¿Estás seguro de que deseas eliminar el caballero "${data.name}"?`
     );
     if (isDelete) {
-      let newData = db.filter((el) => el.id !== id);
+      let newData = db.filter((el) => el.id !== data.id);
       setDb(newData);
     } else {
       return;
