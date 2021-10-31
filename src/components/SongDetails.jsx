@@ -3,12 +3,13 @@ import SongLyric from "./SongLyric";
 import Message from "./Message";
 
 const SongDetails = ({ search, lyric, bio }) => {
+  // console.log(bio);
   if (!lyric || !bio) return null;
 
   return (
-    <article className="grid-1-2">
+    <>
       {bio.artists ? (
-        <SongArtist />
+        <SongArtist artist={bio.artists[0]} />
       ) : (
         <Message
           msg={`Error: no existe el intérprete "${search.artist}"`}
@@ -21,9 +22,9 @@ const SongDetails = ({ search, lyric, bio }) => {
           bgColor="#dc3545"
         />
       ) : (
-        <SongLyric lyric={lyric} />
+        <SongLyric title={search.song} lyrics={lyric.lyrics} />
       )}
-    </article>
+    </>
   );
 };
 
